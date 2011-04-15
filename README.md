@@ -20,3 +20,5 @@ A synchronous Ruby client for [Doozer](https://github.com/ha/doozer).
     => [Fraggle::Block::Response path: "foo", tag: 0, flags: 1, Fraggle::Block::Response path: "ctl", tag: 0, flags: 1, Fraggle::Block::Response tag: 0, flags: 2]
     >> foo = client.del('/foo', 482)
     => Fraggle::Block::Response tag: 0, flags: 3
+
+See [examples](https://github.com/dylanegan/fraggle-block/tree/master/examples) for more.
