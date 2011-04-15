@@ -26,6 +26,7 @@ module Fraggle
         response = @client.getdir('/foo')
         assert_equal exp, response
         assert_equal '/foo/baz', response.last.path
+        assert_equal [Request.new(:verb => GETDIR, :tag => 0, :path => '/foo')], @connection.sent
       end
 
       def test_simple_set
