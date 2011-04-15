@@ -9,11 +9,13 @@ module Fraggle
       end
 
       def test_simple_request
-        request = Fraggle::Block::Request.new(:tag => 0, :verb => GET, :path => '/foo')
-        encoded = request.encode
-        head = [encoded.length].pack("N")
+        request = Fraggle::Block::Request.new(:verb => GET, :path => '/foo')
         @connection.send(request)
         @connection.cn.rewind
+
+        exp = Fraggle::Block::Request.new(:tag => 0, :verb => GET, :path => '/foo')
+        encoded = exp.encode
+        head = [encoded.length].pack("N")
         assert_equal head+encoded, @connection.cn.read
       end
 

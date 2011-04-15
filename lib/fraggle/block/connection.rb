@@ -17,16 +17,23 @@ module Fraggle
       end
 
       def send(req)
+        req.tag = 0
         data = req.encode
         head = [data.length].pack("N")
         @cn.write(head+data)
       end
 
       def read
-        head = @cn.read(4)
-        length = head.unpack("N")[0]
-        data = @cn.read(length)
-        Response.decode(data)
+        responses = []
+        loop do
+          head = @cn.read(4)
+          length = head.unpack("N")[0]
+          data = @cn.read(length)
+          response = Response.decode(data)
+          responses << response 
+          break if response.done?
+        end
+        responses
       end
     end
   end
