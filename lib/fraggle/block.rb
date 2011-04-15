@@ -13,31 +13,29 @@ module Fraggle
     def self.connect(uri=nil)
       uri = uri || ENV["DOOZER_URI"] || DEFAULT_URI
 
-      addrs = uri(uri)
+      addrs = URI.parse(uri)
 
       if addrs.length == 0
         raise ArgumentError, "there were no addrs supplied in the uri (#{uri.inspect})"
       end
 
-      addr = addrs.shift
-      host, port = addr.split(":")
-
-      cn = Connection.new(host, port)
-      Client.new(cn, addrs)
+      Client.new(addrs)
     end
 
-    def self.uri(u)
-      if u =~ /^doozerd:\?(.*)$/
-        parts = $1.split("&")
-        parts.inject([]) do |m, pt|
-          k, v = pt.split("=")
-          if k == "ca"
-            m << v
+    module URI
+      def self.parse(u)
+        if u =~ /^doozerd:\?(.*)$/
+          parts = $1.split("&")
+          parts.inject([]) do |m, pt|
+            k, v = pt.split("=")
+            if k == "ca"
+              m << v
+            end
+            m
           end
-          m
+        else
+          raise ArgumentError, "invalid doozerd uri"
         end
-      else
-        raise ArgumentError, "invalid doozerd uri"
       end
     end
   end

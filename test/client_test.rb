@@ -5,12 +5,13 @@ module Fraggle
     class ClientTest < Test::Unit::TestCase
       include Request::Verb
       def setup
-        @connection = Fraggle::Block::MockConnection.new('1.1.1.1', 1) 
-        @client = Fraggle::Block::MockClient.new(@connection, [])
+        @client = Fraggle::Block::MockClient.new(['1.1.1.1:1'])
+        @connection = @client.connection
       end
 
       def test_simple_reconnect
         assert_equal '1.1.1.1:1', @client.connection.address
+        @client.addrs = ['127.0.0.1:8047', '127.0.0.1:8048']
         @client.reconnect
         assert_equal '127.0.0.1:8047', @client.connection.address
         @client.reconnect

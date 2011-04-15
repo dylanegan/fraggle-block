@@ -7,11 +7,12 @@ module Fraggle
 
       class OutOfNodes < StandardError; end
 
-      attr_reader :addrs, :connection
+      attr_accessor :addrs
+      attr_reader :connection
 
-      def initialize(connection, addrs)
-        @connection = connection
-        @addrs = all_of_the_nodes(addrs)
+      def initialize(addrs = [])
+        @addrs = addrs
+        connect
       end
 
       def rev
@@ -50,27 +51,31 @@ module Fraggle
 
       def reconnect
         disconnect
+        connect
+      end
+
+      def connect
         begin
           host, port = @addrs.shift.split(':')
-          connect(host, port) if host and port
-        rescue
+          @connection = connection_to(host, port)
+          find_all_of_the_nodes
+        rescue => e
           retry if @addrs.any?
           raise OutOfNodes, "where did they go?"
         end
       end
 
-      def connect(host, port)
-        @connection = Connection.new(host, port)
+      def connection_to(host, port)
+        Connection.new(host, port)
+      end
+
+      def find_all_of_the_nodes
+        walk('/ctl/node/*/addr').each do |node|
+          @addrs << node.value unless @addrs.include? node.value
+        end
       end
 
     protected
-
-      def all_of_the_nodes(addrs = [])
-        walk('/ctl/node/*/addr').each do |node|
-          addrs << node.value unless addrs.include? node.value
-        end
-        addrs
-      end
 
       def send(request)
         @connection.send(request)
