@@ -9,6 +9,15 @@ module Fraggle
         @client = Fraggle::Block::MockClient.new(@connection, [])
       end
 
+      def test_simple_reconnect
+        assert_equal '1.1.1.1:1', @client.connection.address
+        @client.reconnect
+        assert_equal '127.0.0.1:8047', @client.connection.address
+        @client.reconnect
+        assert_equal '127.0.0.1:8048', @client.connection.address
+        assert_raises(Fraggle::Block::Client::OutOfNodes) { @client.reconnect }
+      end
+
       def test_simple_rev
         exp = write_response(Response.new(:rev => 0))
         assert_equal exp.first, @client.rev

@@ -26,6 +26,16 @@ module Fraggle
         @connection.sock.rewind
         @connection.read
       end
+
+      def connect(host, port)
+        @connection = MockConnection.new(host, port)
+      end
+
+    protected
+
+      def all_of_the_nodes(addrs = [])
+        ["127.0.0.1:8047", "127.0.0.1:8048"]
+      end
     end
   end
 end

@@ -13,6 +13,10 @@ module Fraggle
         @sock = connect
       end
 
+      def address
+        "#{@host}:#{@port}"
+      end
+
       def connect
         SystemTimer.timeout_after(10) do
           s = TCPSocket.new(@host, @port)

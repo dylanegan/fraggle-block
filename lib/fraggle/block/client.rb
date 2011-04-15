@@ -5,12 +5,13 @@ module Fraggle
     class Client
       include Request::Verb
 
+      class OutOfNodes < StandardError; end
+
       attr_reader :addrs, :connection
 
       def initialize(connection, addrs)
         @connection = connection
-        # TODO: Support failover
-        @addrs = addrs
+        @addrs = all_of_the_nodes(addrs)
       end
 
       def rev
@@ -47,7 +48,29 @@ module Fraggle
         @connection.disconnect
       end
 
+      def reconnect
+        disconnect
+        begin
+          host, port = @addrs.shift.split(':')
+          connect(host, port) if host and port
+        rescue
+          retry if @addrs.any?
+          raise OutOfNodes, "where did they go?"
+        end
+      end
+
+      def connect(host, port)
+        @connection = Connection.new(host, port)
+      end
+
     protected
+
+      def all_of_the_nodes(addrs = [])
+        walk('/ctl/node/*/addr').each do |node|
+          addrs << node.value unless addrs.include? node.value
+        end
+        addrs
+      end
 
       def send(request)
         @connection.send(request)
