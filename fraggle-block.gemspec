@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
   s.name        = "fraggle-block"
   s.version     = Fraggle::Block::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.authors     = ["Dylan Egan", "Blake Mizerany"]
+  s.email       = ["dylanegan@gmail.com", "bmizerany@heroku.com"]
+  s.homepage    = "https://github.com/dylanegan/fraggle-block"
+  s.summary     = %q{A synchronous Ruby client for Doozer.}
+  s.description = %q{A synchronous Ruby client for Doozer.}
 
   s.rubyforge_project = "fraggle-block"
 

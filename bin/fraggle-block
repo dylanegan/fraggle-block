@@ -1,0 +1,5 @@
+require 'fraggle/block'
+require 'irb'
+
+@client = Fraggle::Block.connect ARGV.shift
+IRB.start
