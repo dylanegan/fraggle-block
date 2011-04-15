@@ -39,6 +39,12 @@ module Fraggle
         assert_equal exp.first, @client.del('/foo')
         assert_equal [Request.new(:verb => DEL, :tag => 0, :path => '/foo')], @connection.sent
       end
+
+      def test_simple_walk
+        exp = write_response([Response.new(:verb => WALK, :path => '/foo/bar', :flags => 1), Response.new(:verb => WALK, :path => '/foo/baz')])
+        assert_equal exp, @client.walk('/foo/*')
+        assert_equal [Request.new(:verb => WALK, :tag => 0, :path => '/foo/*')], @connection.sent
+      end
     end
   end
 end

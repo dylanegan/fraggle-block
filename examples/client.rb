@@ -13,3 +13,7 @@ client.del('/foo', rev)
 puts "Deleted /foo"
 foo = client.get('/foo')
 puts foo.inspect
+walk = client.walk('/**')
+walk.each do |file|
+  puts "#{file.path} #{file.rev} #{file.value}"
+end

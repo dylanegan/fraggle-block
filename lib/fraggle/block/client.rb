@@ -38,6 +38,11 @@ module Fraggle
         send(request).first
       end
 
+      def walk(path, rev = nil)
+        request = Request.new(:path => path, :rev => rev, :verb => WALK)
+        send(request)
+      end
+
     protected
 
       def send(request)
