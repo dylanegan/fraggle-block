@@ -1,34 +1,39 @@
 require 'fraggle/block/msg.pb'
 require 'socket'
+require "system_timer"
 
 module Fraggle
   module Block
     class Connection
-      attr_accessor :host, :port, :cn
+      attr_accessor :host, :port, :sock
 
       def initialize(host, port)
         @host = host
         @port = port
-        @cn   = connect
+        @sock = connect
       end
 
       def connect
-        #TODO: Return tcp connection
+        SystemTimer.timeout_after(10) do
+          s = TCPSocket.new(@host, @port)
+          s.setsockopt Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1
+          s
+        end
       end
 
       def send(req)
         req.tag = 0
         data = req.encode
         head = [data.length].pack("N")
-        @cn.write(head+data)
+        @sock.write(head+data)
       end
 
       def read
         responses = []
         loop do
-          head = @cn.read(4)
+          head = @sock.read(4)
           length = head.unpack("N")[0]
-          data = @cn.read(length)
+          data = @sock.read(length)
           response = Response.decode(data)
           responses << response 
           break if response.done?

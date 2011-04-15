@@ -11,21 +11,18 @@ module Fraggle
       def test_simple_request
         request = Fraggle::Block::Request.new(:verb => GET, :path => '/foo')
         @connection.send(request)
-        @connection.cn.rewind
+        @connection.sock.rewind
 
-        exp = Fraggle::Block::Request.new(:tag => 0, :verb => GET, :path => '/foo')
-        encoded = exp.encode
+        request.tag = 0
+        encoded = request.encode
         head = [encoded.length].pack("N")
-        assert_equal head+encoded, @connection.cn.read
+        assert_equal head+encoded, @connection.sock.read
       end
 
       def test_simple_response
-        @connection.cn.reopen
-        @connection.cn.write("\000\000\000\n\b\000\020\0012\004test")
-        @connection.cn.write("\000\000\000\n\b\000\020\0012\004moot")
-        @connection.cn.rewind
-        assert_equal "test", @connection.read.value
-        assert_equal "moot", @connection.read.value
+        exp = write_response(Response.new(:value => 'test', :rev => 0))
+        @connection.sock.rewind
+        assert_equal exp, @connection.read
       end
     end
   end

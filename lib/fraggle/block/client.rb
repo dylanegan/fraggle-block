@@ -4,8 +4,13 @@ module Fraggle
   module Block
     class Client
       include Request::Verb
-      def initialize(connection)
+
+      attr_reader :addrs, :connection
+
+      def initialize(connection, addrs)
         @connection = connection
+        # TODO: Support failover
+        @addrs = addrs
       end
 
       def rev
@@ -32,6 +37,8 @@ module Fraggle
         request = Request.new(:path => path, :rev => rev, :verb => DEL)
         send(request).first
       end
+
+    protected
 
       def send(request)
         @connection.send(request)

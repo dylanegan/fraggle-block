@@ -8,7 +8,7 @@ require 'fraggle/block'
 module Fraggle
   module Block
     class MockConnection < Connection
-      attr_reader :sent, :recv
+      attr_reader :sent
 
       def connect
         StringIO.new
@@ -23,9 +23,24 @@ module Fraggle
     class MockClient < Client
       def send(request)
         @connection.send(request)
-        @connection.cn.rewind
+        @connection.sock.rewind
         @connection.read
       end
     end
+  end
+end
+
+class Test::Unit::TestCase
+  def write_response(responses)
+    @connection.sock.reopen
+    responses = Array(responses)
+    responses.each do |response|
+      response.tag = 0
+      response.flags ||= 1|2
+      encoded = response.encode.to_s
+      head = [response.encode.length].pack("N")
+      @connection.sock.write head+encoded
+    end
+    responses
   end
 end

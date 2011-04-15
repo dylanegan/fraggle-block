@@ -6,20 +6,7 @@ module Fraggle
       include Request::Verb
       def setup
         @connection = Fraggle::Block::MockConnection.new('1.1.1.1', 1) 
-        @client = Fraggle::Block::MockClient.new(@connection)
-      end
-
-      def write_response(responses)
-        @connection.cn.reopen
-        responses = Array(responses)
-        responses.each do |response|
-          response.tag = 0
-          response.flags ||= 1|2
-          encoded = response.encode.to_s
-          head = [response.encode.length].pack("N")
-          @connection.cn.write head+encoded
-        end
-        responses
+        @client = Fraggle::Block::MockClient.new(@connection, [])
       end
 
       def test_simple_rev
