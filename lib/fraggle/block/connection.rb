@@ -39,7 +39,7 @@ module Fraggle
           length = head.unpack("N")[0]
           data = @sock.read(length)
           response = Response.decode(data)
-          responses << response 
+          responses << response if response.valid? 
           break if response.done?
         end
         responses
