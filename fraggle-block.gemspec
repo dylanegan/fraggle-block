@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Fraggle::Block::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Dylan Egan", "Blake Mizerany"]
-  s.email       = ["dylanegan@gmail.com", "bmizerany@heroku.com"]
+  s.email       = ["dylanegan@gmail.com", "blake.mizerany@gmail.com"]
   s.homepage    = "https://github.com/dylanegan/fraggle-block"
   s.summary     = %q{A synchronous Ruby client for Doozer.}
   s.description = %q{A synchronous Ruby client for Doozer.}

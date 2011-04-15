@@ -1,4 +1,4 @@
-# Fraggle
+# Fraggle::Block
 
 A synchronous Ruby client for [Doozer](https://github.com/ha/doozer). 
 
