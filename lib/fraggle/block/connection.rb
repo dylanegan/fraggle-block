@@ -21,6 +21,10 @@ module Fraggle
         end
       end
 
+      def disconnect
+        @sock.close
+      end
+
       def send(req)
         req.tag = 0
         data = req.encode

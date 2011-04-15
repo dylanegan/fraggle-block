@@ -24,6 +24,12 @@ module Fraggle
         @connection.sock.rewind
         assert_equal exp, @connection.read
       end
+
+      def test_simple_disconnect
+        assert !@connection.sock.closed?
+        @connection.disconnect
+        assert @connection.sock.closed?
+      end
     end
   end
 end

@@ -43,6 +43,10 @@ module Fraggle
         send(request)
       end
 
+      def disconnect
+        @connection.disconnect
+      end
+
     protected
 
       def send(request)
