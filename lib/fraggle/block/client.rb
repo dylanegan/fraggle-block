@@ -25,17 +25,17 @@ module Fraggle
         send(request).first
       end
 
-      def getdir(path, rev = nil)
-        request = Request.new(:path => path, :rev => rev, :verb => GETDIR)
+      def getdir(path, rev = nil, offset = nil, limit = nil)
+        request = Request.new(:path => path, :rev => rev, :offset => offset, :limit => limit, :verb => GETDIR)
         send(request)
       end
 
-      def set(path, value, rev = nil)
+      def set(path, value, rev)
         request = Request.new(:path => path, :value => value, :rev => rev, :verb => SET)
         send(request).first
       end
 
-      def del(path, rev = nil)
+      def del(path, rev)
         request = Request.new(:path => path, :rev => rev, :verb => DEL)
         send(request).first
       end
