@@ -41,14 +41,14 @@ module Fraggle
 
       def test_simple_set
         exp = write_response(Response.new(:rev => 10))
-        assert_equal exp.first, @client.set('/foo', 'bar')
-        assert_equal [Request.new(:verb => SET, :tag => 0, :path => '/foo', :value => 'bar')], @connection.sent
+        assert_equal exp.first, @client.set('/foo', 'bar', 0)
+        assert_equal [Request.new(:verb => SET, :tag => 0, :path => '/foo', :value => 'bar', :rev => 0)], @connection.sent
       end
 
       def test_simple_del
         exp = write_response(Response.new(:flags => 1|2))
-        assert_equal exp.first, @client.del('/foo')
-        assert_equal [Request.new(:verb => DEL, :tag => 0, :path => '/foo')], @connection.sent
+        assert_equal exp.first, @client.del('/foo', 0)
+        assert_equal [Request.new(:verb => DEL, :tag => 0, :path => '/foo', :rev => 0)], @connection.sent
       end
 
       def test_simple_walk
