@@ -1,6 +1,5 @@
 require 'fraggle/block/msg.pb'
 require 'socket'
-require "system_timer"
 
 module Fraggle
   module Block
@@ -18,11 +17,24 @@ module Fraggle
       end
 
       def connect
-        SystemTimer.timeout_after(10) do
-          s = TCPSocket.new(@host, @port)
-          s.setsockopt Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1
-          s
+       # http://stackoverflow.com/questions/231647/how-do-i-set-the-socket-timeout-in-ruby
+       timeout = 10
+       addr = Socket.getaddrinfo(@host, nil)
+       sock = Socket.new(Socket.const_get(addr[0][0]), Socket::SOCK_STREAM, 0)
+
+       begin
+        sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
+       rescue Errno::EINPROGRESS
+        resp = IO.select([sock],nil, nil, timeout.to_i)
+        if resp.nil?
+          raise Errno::ECONNREFUSED
         end
+        begin
+          sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
+        rescue Errno::EISCONN
+        end
+       end
+       sock
       end
 
       def disconnect
