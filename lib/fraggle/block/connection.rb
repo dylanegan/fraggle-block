@@ -25,7 +25,7 @@ module Fraggle
        begin
         sock.connect_nonblock(Socket.pack_sockaddr_in(@port, addr[0][3]))
        rescue Errno::EINPROGRESS
-        resp = IO.select([sock],nil, nil, timeout.to_i)
+        resp = IO.select(nil, [sock], nil, timeout.to_i)
         if resp.nil?
           raise Errno::ECONNREFUSED
         end
@@ -50,14 +50,11 @@ module Fraggle
 
       def read
         responses = []
-        loop do
-          head = @sock.read(4)
-          length = head.unpack("N")[0]
-          data = @sock.read(length)
-          response = Response.decode(data)
-          responses << response if response.valid? 
-          break if response.done?
-        end
+        head = @sock.read(4)
+        length = head.unpack("N")[0]
+        data = @sock.read(length)
+        response = Response.decode(data)
+        responses << response if response.valid? 
         responses
       end
     end
