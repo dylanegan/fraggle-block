@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "beefcake", "~>0.3"
-  s.add_dependency "protobuf", "~>1.1.3"
 
   s.add_development_dependency "turn"
 end
