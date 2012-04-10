@@ -1,6 +1,19 @@
 require 'fraggle/block/msg.pb'
 require 'socket'
-require "system_timer"
+
+# use system_timer if its available and we are running MRI 1.8.x
+begin
+  if !defined?(RUBY_ENGINE) || (RUBY_ENGINE == 'ruby' && RUBY_VERSION < '1.9.0')
+    require 'system_timer'
+    FraggleTimer = SystemTimer
+  else
+    require 'timeout'
+    FraggleTimer = Timeout
+  end
+rescue LoadError => e
+  require 'timeout'
+  FraggleTimer = Timeout
+end
 
 module Fraggle
   module Block
@@ -18,7 +31,7 @@ module Fraggle
       end
 
       def connect
-        SystemTimer.timeout_after(10) do
+        FraggleTimer.timeout(10) do
           s = TCPSocket.new(@host, @port)
           s.setsockopt Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1
           s
