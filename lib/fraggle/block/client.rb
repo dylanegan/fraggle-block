@@ -12,6 +12,9 @@ module Fraggle
 
       def initialize(addrs = [])
         @addrs = addrs
+        if not @addrs or @addrs.length == 0
+          raise "No doozer servers to connect to"
+        end
         connect
       end
 
@@ -40,9 +43,22 @@ module Fraggle
         send(request).first
       end
 
-      def walk(path, rev = nil)
-        request = Request.new(:path => path, :rev => rev, :verb => WALK)
-        send(request)
+      def walk(path, rev = nil, offset = 0)
+        all_responses = []
+        done = false
+        while not done
+          request = Request.new(:path => path, :rev => rev, :verb => WALK, :offset => offset)
+          responses = send(request)
+          responses.each do |response|
+            if response.err_code == Response::Err::RANGE
+              done = true
+              break
+            end
+            all_responses.push response
+            offset += 1
+          end
+        end
+        return all_responses
       end
 
       def disconnect
@@ -57,7 +73,7 @@ module Fraggle
       def connect
         begin
           host, port = @addrs.shift.split(':')
-          @connection = connection_to(host, port)
+          @connection = connection_to(host, port.to_i)
           find_all_of_the_nodes
         rescue => e
           retry if @addrs.any?
@@ -70,7 +86,8 @@ module Fraggle
       end
 
       def find_all_of_the_nodes
-        walk('/ctl/node/*/addr').each do |node|
+        response = rev()
+        walk('/ctl/node/*/addr', response.rev).each do |node|
           @addrs << node.value unless @addrs.include? node.value
         end
       end

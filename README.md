@@ -24,3 +24,9 @@ A synchronous Ruby client for [Doozer](https://github.com/ha/doozer).
     => nil 
 
 See [examples](https://github.com/dylanegan/fraggle-block/tree/master/examples) for more.
+
+
+# Generate ProtoBuf code
+
+BEEFCAKE_NAMESPACE=Fraggle::Block protoc --beefcake_out lib/fraggle/block/ -I .  msg.proto
+

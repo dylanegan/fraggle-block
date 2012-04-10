@@ -3,7 +3,7 @@ require 'fraggle/block/response'
 
 module Fraggle
   module Block
-    DEFAULT_URI = "doozerd:?" + [
+    DEFAULT_URI = "doozer:?" + [
       "ca=127.0.0.1:8046",
       "ca=127.0.0.1:8041",
       "ca=127.0.0.1:8042",
@@ -24,7 +24,7 @@ module Fraggle
 
     module URI
       def self.parse(u)
-        if u =~ /^doozerd:\?(.*)$/
+        if u =~ /^doozer:\?(.*)$/
           parts = $1.split("&")
           parts.inject([]) do |m, pt|
             k, v = pt.split("=")
